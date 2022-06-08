@@ -1,0 +1,67 @@
+﻿<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EC97A30F-B205-4D0A-9036-09590307E978}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <AssemblyName>ClassLibrary</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>AppLogAndEventHelper</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="AppLogAndEventHelper.csproj.bak" />
+    <None Include="AppLogAndEventHelper.csproj.vspscc" />
+    <None Include="Helpers\PackagingExtensions.cs.bak" />
+    <None Include="Properties\Settings.Designer.cs.bak" />
+    <None Include="Properties\Settings.settings" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppLogAndEventHelper.cs" />
+    <Compile Include="EmailManager.cs" />
+    <Compile Include="Event.cs" />
+    <Compile Include="EventCatcher.cs" />
+    <Compile Include="Formater.cs" />
+    <Compile Include="Helpers\FileReadWriteExtensions.cs" />
+    <Compile Include="Helpers\PackagingExtensions.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs" />
+    <Compile Include="RotatingLog.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="logo.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
+  <ProjectExtensions>
+    <VisualStudio AllowExistingFolder="true" />
+  </ProjectExtensions>
+</Project>
