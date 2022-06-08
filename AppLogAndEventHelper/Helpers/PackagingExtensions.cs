@@ -1,11 +1,10 @@
 ﻿using System;
 using System.IO;
-//using System.Runtime.Serialization.Json;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
+using System.Text.RegularExpressions; //using System.Runtime.Serialization.Json;
 
-namespace Mew.AppLogAndEventHelper.Helpers
+namespace AppLogAndEventHelper.Helpers
 {
     public static class PackagingExtensions
     {

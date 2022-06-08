@@ -41,7 +41,6 @@
     <None Include="AppLogAndEventHelper.csproj.bak" />
     <None Include="AppLogAndEventHelper.csproj.vspscc" />
     <None Include="Helpers\PackagingExtensions.cs.bak" />
-    <None Include="Properties\Settings.Designer.cs.bak" />
     <None Include="Properties\Settings.settings" />
   </ItemGroup>
   <ItemGroup>
