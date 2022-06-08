@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
-using System.Text;
-using Mew.AppLogAndEventHelper.Properties;
 
-namespace Mew.AppLogAndEventHelper
-{
+namespace Mew {
     public class EmailManager
     {
         static EmailManager()
@@ -20,7 +14,7 @@ namespace Mew.AppLogAndEventHelper
                 EnableSsl = false,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                Credentials = new System.Net.NetworkCredential(@"e_rudakova@csd.ua", @"7*3DedeP18")
+                Credentials = new NetworkCredential(@"e_rudakova@csd.ua", @"7*3DedeP18")
             };
             
             defaultSender_ = new MailAddress("e_rudakova@csd.ua", "CaRu");
@@ -69,9 +63,9 @@ namespace Mew.AppLogAndEventHelper
             data.Dispose();
         }
 
-        public static void SendEmail(string recievers, string subject = "", string body = "")
+        public static void SendEmail(string receivers, string subject = "", string body = "")
         {
-            var message = new MailMessage(defaultSender_.Address, recievers)
+            var message = new MailMessage(defaultSender_.Address, receivers)
             {
                 From = defaultSender_,
                 //To = new MailAddress(reciever),
@@ -82,9 +76,9 @@ namespace Mew.AppLogAndEventHelper
             defaultSmtpClient_.Send(message);
         }
 
-        public static void SendFile(string recievers, FileInfo fi,  string subject = "", string body = "")
+        public static void SendFile(string receivers, FileInfo fi,  string subject = "", string body = "")
         {
-            var message = new MailMessage(defaultSender_.Address, recievers)
+            var message = new MailMessage(defaultSender_.Address, receivers)
             {
                 From = defaultSender_,
                 //To = new MailAddress(reciever),

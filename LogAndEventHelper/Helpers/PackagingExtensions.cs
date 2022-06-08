@@ -1,11 +1,10 @@
 ﻿using System;
 using System.IO;
-//using System.Runtime.Serialization.Json;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
+using System.Text.RegularExpressions; //using System.Runtime.Serialization.Json;
 
-namespace Mew.AppLogAndEventHelper.Helpers
+namespace Mew.Helpers
 {
     public static class PackagingExtensions
     {
@@ -13,7 +12,7 @@ namespace Mew.AppLogAndEventHelper.Helpers
 
         public static string Base64Encode(this string utf8_string, Encoding encoding = null)
         {
-            encoding = encoding ?? DefaultEncoding;
+            encoding ??= DefaultEncoding;
             var to_encode_as_bytes = encoding.GetBytes(utf8_string);
             var return_value = Convert.ToBase64String(to_encode_as_bytes);
             return return_value;
@@ -24,7 +23,7 @@ namespace Mew.AppLogAndEventHelper.Helpers
             if (!IsBase64String(base64_string))
                 return base64_string;
 
-            encoding = encoding ?? DefaultEncoding;
+            encoding ??= DefaultEncoding;
 
             var encoded_data_as_bytes = FromBase64String_Safe(base64_string);
             var return_value = encoding.GetString(encoded_data_as_bytes);
@@ -43,16 +42,13 @@ namespace Mew.AppLogAndEventHelper.Helpers
         //Regex.IsMatch(s, "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$");
         public static bool IsBase64String(this string s) => Regex.IsMatch(s, "^([A-Za-z0-9+/=]+)$");
 
-        private static byte[] FromBase64String_Safe(this string input)
-        {
-            using (var ms = new MemoryStream())
-            using (var cs = new CryptoStream(ms, new FromBase64Transform(), CryptoStreamMode.Write))
-            using (var tr = new StreamWriter(cs))
-            {
-                tr.Write(input);
-                tr.Flush();
-                return ms.ToArray();
-            }
+        private static byte[] FromBase64String_Safe(this string input) {
+            using var ms = new MemoryStream();
+            using var cs = new CryptoStream(ms, new FromBase64Transform(), CryptoStreamMode.Write);
+            using var tr = new StreamWriter(cs);
+            tr.Write(input);
+            tr.Flush();
+            return ms.ToArray();
         }
 
         //public static string Serialize<T>(this T obj, Encoding encoding = null)
@@ -79,13 +75,10 @@ namespace Mew.AppLogAndEventHelper.Helpers
         //    return obj;
         //}
 
-        public static string GetMD5HashFromFile(this FileInfo file_info)
-        {
-            using (var md5 = MD5.Create())
-            {
-                using (var stream = File.OpenRead(file_info.FullName))
-                    return BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", string.Empty);
-            }
+        public static string GetMD5HashFromFile(this FileInfo file_info) {
+            using var md5 = MD5.Create();
+            using var stream = File.OpenRead(file_info.FullName);
+            return BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", string.Empty);
         }
     }
     //public class SerializeToString {

@@ -3,13 +3,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
-namespace Mew.AppLogAndEventHelper
-{
+namespace Mew {
     /// <summary>
     ///     Тип события
     /// </summary>
-    public enum EventType
-    {
+    public enum EventType {
         PopUp = 100,
         Message = 70,
         Result = 50,
@@ -25,46 +23,35 @@ namespace Mew.AppLogAndEventHelper
     /// <summary>
     ///     Событие содержащее место в коде, время, тип и комментарий
     /// </summary>
-    public struct Event
-    {
+    public struct Event {
         public readonly object[] Comments;
         public readonly string Place;
         public readonly DateTime Time;
         public readonly EventType Type;
         public readonly Thread Thread;
 
-        public Event(EventType et, object[] oa, string code_place = null)
-        {
+        public Event(EventType et, object[] oa, string code_place = null) {
             this.Type = et;
 
-            while (oa.Length == 1 && oa[0] is object[])
-            {
-                oa = (object[]) oa[0];
-            }
+            while (oa.Length == 1 && oa[0] is object[]) oa = (object[]) oa[0];
 
-            for (var i = 0; i < oa.Length; i++)
-            {
-                oa[i] = oa[i] ?? "param[" + i + "]=null";
-            }
+            for (var i = 0; i < oa.Length; i++) oa[i] = oa[i] ?? "param[" + i + "]=null";
 
             this.Comments = oa;
             this.Time = DateTime.Now;
 
             this.Place = "";
-            if (code_place != null)
-            {
+            if (code_place != null) {
                 this.Place = code_place;
             }
-            else
-            {
+            else {
 #if DEBUG
-                var method = (new StackFrame(4)).GetMethod();
+                var method = new StackFrame(4).GetMethod();
 #else
                 var method = (new StackFrame(2)).GetMethod();
 #endif
 
-                if (method?.DeclaringType != null)
-                {
+                if (method?.DeclaringType != null) {
                     var classes = method.DeclaringType.ToString().Split('.');
                     this.Place = classes.Last() + " ." + method.Name;
                 }

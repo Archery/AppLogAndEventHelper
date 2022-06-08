@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Event handler, raising events and puting their data to log, console, etc. Filter by event type. Also some useful helpers</Description>
+    <Authors>CathRu</Authors>
+    <Company>Mew</Company>
+    <PackageId>Mew.LogAndEventHelper</PackageId>
+    <RootNamespace>Mew</RootNamespace>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageIconUrl />
+    <PackageTags>log, event handler,</PackageTags>
+    <Version>1.0.0-beta</Version>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>CathRu</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="logo.ico" />
+    <None Include="logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="logo.ico" />
+  </ItemGroup>
+
+</Project>
