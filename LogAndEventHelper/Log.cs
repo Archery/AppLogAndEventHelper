@@ -8,12 +8,11 @@ namespace Mew {
     ///     Класс для работы с текстовыми файлами
     /// </summary>
     public class Log : IDisposable {
-        private readonly string delimiter_;
         private readonly StreamWriter sw_;
         public readonly FileInfo Path;
         public int LinesCount { get; private set; }
 
-        public Log(string path, string delimiter = " ", bool append = false, Encoding encoding = null) {
+        public Log(string path, bool append = false, Encoding encoding = null) {
             this.LinesCount = 0;
             try {
                 encoding ??= Encoding.Unicode;
@@ -23,7 +22,6 @@ namespace Mew {
                 this.sw_ = new StreamWriter(file_stream, encoding) {
                     AutoFlush = true
                 };
-                this.delimiter_ = delimiter;
             }
             catch (Exception ex) {
                 AppLogAndEventHelper.Instance.RaiseEvent(EventType.Error, ex);
@@ -55,16 +53,19 @@ namespace Mew {
                 if (objects != null)
                     this.SortOutObjectList(objects);
                 else
-                    this.sw_.Write(child.Fo() + this.delimiter_);
+                    this.sw_.Write(child.Fo() + " ");
             }
         }
 
         public void Write(params object[] list) {
-            if (this.sw_?.BaseStream == null) return;
+            lock (this.sw_) {
+                if (this.sw_?.BaseStream == null) return;
+            }
+
             lock (this.sw_) {
                 this.WriteListOfObjects(list);
                 this.sw_.WriteLine();
-                this.LinesCount = this.LinesCount + 1;
+                this.LinesCount += 1;
             }
         }
     }

@@ -58,6 +58,8 @@ namespace Mew {
             }
 
             this.Thread = Thread.CurrentThread;
+
         }
+        public string CommentsToString() => this.Comments.Aggregate("", (current, t) => current + t.Fo() + " ");
     }
 }
