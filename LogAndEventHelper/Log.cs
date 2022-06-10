@@ -8,12 +8,13 @@ namespace Mew {
     ///     Класс для работы с текстовыми файлами
     /// </summary>
     public class Log : IDisposable {
+		private readonly string delimiter_;
         private readonly StreamWriter sw_;
         public readonly FileInfo Path;
         public int LinesCount { get; private set; }
 
-        public Log(string path, bool append = false, Encoding encoding = null) {
-            this.LinesCount = 0;
+        public Log(string path, string delimiter = " ", bool append = false, Encoding encoding = null) {
+			this.LinesCount = 0;
             try {
                 encoding ??= Encoding.Unicode;
                 this.Path = new FileInfo(System.IO.Path.GetFullPath(path));
@@ -53,19 +54,17 @@ namespace Mew {
                 if (objects != null)
                     this.SortOutObjectList(objects);
                 else
-                    this.sw_.Write(child.Fo() + " ");
+                    this.sw_.Write(child.Fo() + this.delimiter_);
             }
         }
 
         public void Write(params object[] list) {
-            lock (this.sw_) {
-                if (this.sw_?.BaseStream == null) return;
-            }
+            if (this.sw_?.BaseStream == null) return;
+            
 
             lock (this.sw_) {
                 this.WriteListOfObjects(list);
                 this.sw_.WriteLine();
-                this.LinesCount += 1;
             }
         }
     }

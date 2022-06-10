@@ -6,44 +6,32 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Mew.AppLogAndEventHelper.Helpers;
+using Mew.Helpers;
 
-namespace Mew.AppLogAndEventHelper
-{
+namespace Mew {
     /// <summary>
     ///     Класс для использования пользовательских форматов
     /// </summary>
-    public class Formater
-    {
-        public delegate string ObjectFormater(object o);
+    public class Formatter {
+        public delegate string ObjectFormatter(object o);
 
-
-        private static volatile Formater instance_;
+        private static volatile Formatter instance_;
         private static readonly object syncRoot_ = new object();
-        private readonly Dictionary<Type, ObjectFormater> formatingRules_;
+        private readonly Dictionary<Type, ObjectFormatter> formattingRules_;
 
-        public static Formater Instance
-        {
-            get
-            {
-                if (instance_ != null)
-                {
-                    return instance_;
-                }
-                lock (syncRoot_)
-                {
-                    if (instance_ == null)
-                    {
-                        instance_ = new Formater();
+        public static Formatter Instance {
+            get {
+                if (instance_ != null) return instance_;
+                lock (syncRoot_) {
+                    if (instance_ == null) instance_ = new Formatter();
                     }
-                }
+
                 return instance_;
             }
         }
 
-        private Formater()
-        {
-            this.formatingRules_ = new Dictionary<Type, ObjectFormater>();
+        private Formatter() {
+            this.formattingRules_ = new Dictionary<Type, ObjectFormatter>();
             this.AddRule(typeof(string), StringF);
             this.AddRule(typeof(object), StringF);
             this.AddRule(typeof(string[]), StringArrayF);
@@ -51,38 +39,25 @@ namespace Mew.AppLogAndEventHelper
             this.AddRule(typeof(Exception), ExceptionF);
         }
 
-        public void AddRule(Type type, ObjectFormater f)
-        {
-            if (this.formatingRules_.ContainsKey(type))
-            {
-                this.formatingRules_.Remove(type);
-            }
-            this.formatingRules_.Add(type, f);
+        public void AddRule(Type type, ObjectFormatter f) {
+            if (this.formattingRules_.ContainsKey(type)) this.formattingRules_.Remove(type);
+            this.formattingRules_.Add(type, f);
         }
 
-        public string Fo(object o)
-        {
-            if (o == null)
-            {
-                return "null";
-            }
+        public string Fo(object o) {
+            if (o == null) return "null";
 
             var type = o.GetType();
             
             //if(type.IsArray)
-            while (type != null)
-            {
-                if (this.formatingRules_.ContainsKey(type))
-                {
-                    ObjectFormater f;
-                    this.formatingRules_.TryGetValue(type, out f);
+            while (type != null) {
+                if (this.formattingRules_.ContainsKey(type)) {
+                    this.formattingRules_.TryGetValue(type, out var f);
                     Debug.Assert(f != null, "f != null");
                     return f(o);
                 }
-                if (type.GetInterface(nameof(IEnumerable)) != null)
-                {   
-                    return IEnumerableF((IEnumerable) o);
-                }
+
+                if (type.GetInterface(nameof(IEnumerable)) != null) return IEnumerableF((IEnumerable) o);
                 //if (type.IsSerializable)
                 //    return o.Serialize();
                 type = type.BaseType;
@@ -93,16 +68,13 @@ namespace Mew.AppLogAndEventHelper
 
         #region Formater
 
-        public static string IEnumerableF(IEnumerable list, char delimiter = ',')
-        {
+        public static string IEnumerableF(IEnumerable list, char delimiter = ',') {
             var is_dictionary = list.GetType().GetInterface(nameof(IDictionary)) != null;
             var sb = new StringBuilder($"{nameof(list)}:");
 
-            if (list.GetType().GetInterface(nameof(IDictionary)) != null)
-            {
+            if (list.GetType().GetInterface(nameof(IDictionary)) != null) {
                 var dic = (IDictionary) list;
-                if (dic.Count < 1)
-                {
+                if (dic.Count < 1) {
                     sb.Append(" [empty]");
                     return sb.ToString();
                 }
@@ -113,39 +85,30 @@ namespace Mew.AppLogAndEventHelper
                 //    object kvpValue = valueType.GetProperty("Value").GetValue(value, null);
 
                 foreach (var key in dic.Keys)
-                {
                     sb.Append($"{key.Fo()} => {dic[key].Fo()}" + delimiter);
                 }
-            }
-            else
-            {
-
+            else {
                 foreach (var element in list)
-                {
-                        sb.Append(element.Fo() + delimiter);
+                    sb.Append($"{element.Fo()}" + delimiter);
                 }
-            }
 
             return sb.ToString().TrimEnd(delimiter);
         }
 
         private static string StringF(object o) => o.ToString();
 
-        private static string StringArrayF(object o)
-        {
+        private static string StringArrayF(object o) {
             var to = (string[]) o;
-            var result = to.Aggregate(string.Empty, (current, s) => current + ("\"" + s + "\"; "));
+            var result = to.Aggregate(string.Empty, (current, s) => current + "\"" + s + "\"; ");
             return result.Substring(0, result.Length - 2);
         }
 
-        private static string ListStringArrayF(object o)
-        {
+        private static string ListStringArrayF(object o) {
             var to = (List<string>) o;
-            return (to.ToArray()).Fo();
+            return to.ToArray().Fo();
         }
 
-        private static string ExceptionF(object o)
-        {
+        private static string ExceptionF(object o) {
             var to = (Exception) o;
             return "Exception: " + to.GetType().Name + " = \"" + to.Message + "\"";
         }
@@ -154,16 +117,11 @@ namespace Mew.AppLogAndEventHelper
     }
 
 
-    public static class FormaterExtension
-    {
-        public static string Fo(this object o) => Formater.Instance.Fo(o);
+    public static class FormatterExtension {
+        public static string Fo(this object o) => Formatter.Instance.Fo(o);
 
-        public static string FullObjectData<T>(this T o, bool public_only = true, bool is_recursive = false)
-        {
-            if (o == null)
-            {
-                return "null";
-            }
+        public static string FullObjectData<T>(this T o, bool public_only = true, bool is_recursive = false) {
+            if (o == null) return "null";
 
             var type = o.GetType();
             if (!type.IsClass)
@@ -173,35 +131,25 @@ namespace Mew.AppLogAndEventHelper
 
             var fields = public_only ? type.GetFields().Where(x => x.IsPublic) : type.GetFields();
             fields = fields.OrderBy(x => x.Name);
-            foreach (var field in fields)
-            {
+            foreach (var field in fields) {
                 sb.Append($"{field.Name}[{field.IsPublic}][{field.FieldType.Name}] = ");
                 var value = field.GetValue(o);
                 if (field.FieldType.IsClass && is_recursive)
-                {
                     sb.Append(value.FullObjectData(public_only, true));
-                }
                 else
-                {
                     sb.Append(field.GetValue(o).Fo());
-                }
                 sb.AppendLine();
             }
 
             var properties = public_only ? type.GetProperties().Where(x => x.CanRead) : type.GetProperties();
             properties = properties.OrderBy(x => x.Name);
-            foreach (var property in properties)
-            {
+            foreach (var property in properties) {
                 sb.Append($"{property.Name}[{property.CanRead}][{property.PropertyType.Name}] = ");
                 var value = property.GetValue(o, BindingFlags.DeclaredOnly, null, new object[0], CultureInfo.InvariantCulture);
                 if (property.PropertyType.IsClass && is_recursive)
-                {
                     sb.Append(FullObjectData(value));
-                }
                 else
-                {
                     sb.Append(value.Fo());
-                }
                 sb.AppendLine();
             }
 

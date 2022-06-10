@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+
 // ReSharper disable PossibleNullReferenceException
 
 
-namespace Mew.AppLogAndEventHelper {
+namespace Mew {
 	/// <summary>
 	///     Класс для улавливания событий и рассылки их подписчикам
 	/// </summary>
@@ -17,7 +18,7 @@ namespace Mew.AppLogAndEventHelper {
 
 		private static readonly object lock_ = new object();
 		private readonly Queue<Event> events_ = new Queue<Event>();
-		public event InfoEventHandler RecievedInfo;
+        public event InfoEventHandler ReceivedInfo;
 
 		public void RaiseEventByPlace(EventType type, string code_place, params object[] data_list) {
 			lock(lock_) {
@@ -26,8 +27,7 @@ namespace Mew.AppLogAndEventHelper {
 				foreach (var to in data_list.OfType<Exception>()) {
 					var s = new StringBuilder();
 					var ex = to;
-					while (ex != null)
-					{
+                    while (ex != null) {
 						s.AppendLine($"Exception: {ex.GetType().Name}");
 						s.AppendLine($"Message: {ex.Message}");
 						s.AppendLine($"StackTrace: {ex.StackTrace}");
@@ -50,9 +50,9 @@ namespace Mew.AppLogAndEventHelper {
 		}
 
 		private void SendInfo() {
-			if (this.RecievedInfo == null) { return; }
+            if (this.ReceivedInfo == null) return;
 
-			while (this.events_.Count > 0) { this.RecievedInfo(this.events_.Dequeue()); }
+            while (this.events_.Count > 0) this.ReceivedInfo(this.events_.Dequeue());
 		}
 	}
 }
