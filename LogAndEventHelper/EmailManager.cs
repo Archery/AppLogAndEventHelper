@@ -9,15 +9,15 @@ namespace Mew {
     {
         static EmailManager()
         {
-            defaultSmtpClient_ = new SmtpClient("mail.csd.ua", 25)
+            defaultSmtpClient_ = new SmtpClient("mail.ua", 25)
             {
                 EnableSsl = false,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(@"e_rudakova@csd.ua", @"7*3DedeP18")
+                Credentials = new NetworkCredential(@"e@mail.ua", @"password")
             };
-            
-            defaultSender_ = new MailAddress("e_rudakova@csd.ua", "CaRu");
+
+            defaultSender_ = new MailAddress("e@mail.ua", "MyName");
         }
 
         private static readonly SmtpClient defaultSmtpClient_;
