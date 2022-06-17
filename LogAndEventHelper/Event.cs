@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading;
 
 namespace Mew {
@@ -60,6 +61,12 @@ namespace Mew {
             this.Thread = Thread.CurrentThread;
 
         }
-        public string CommentsToString() => this.Comments.Aggregate("", (current, t) => current + t.Fo() + " ");
+
+        public string CommentsToString() {
+            var sb = new StringBuilder();
+            foreach (var c in this.Comments) sb.Append($"{(c == null ? "null" : c.Fo())} ");
+
+            return sb.ToString();
+        }
     }
 }
