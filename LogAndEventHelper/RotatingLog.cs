@@ -12,7 +12,7 @@ namespace Mew {
         public RotatingLog(DirectoryInfo log_dir) {
             this.logDir_ = log_dir;
             this.CheckLog();
-            AppLogAndEventHelper.Instance.AddReceiver(this.Write);
+            AppHelper.Instance.AddReceiver(this.Write);
         }
 
         public void Dispose() => this.log_?.Dispose();
@@ -25,12 +25,12 @@ namespace Mew {
                 var path = Path.Combine(this.logDir_.FullName, $"{this.date_:yy-MM-dd}.log");
                 this.logFile_ = new FileInfo(path);
                 this.log_?.Dispose();
-                this.log_ = new Log(this.logFile_.FullName, "", true);
+                this.log_ = new Log(this.logFile_.FullName, true, "");
             }
             catch (Exception e) {
-                AppLogAndEventHelper.Instance.RemoveReceiver(this.Write);
-                AppLogAndEventHelper.Instance.RaiseError($"{nameof(RotatingLog)} was turned off becouse of some problems");
-                AppLogAndEventHelper.Instance.RaiseError(e);
+                AppHelper.Instance.RemoveReceiver(this.Write);
+                AppHelper.Instance.RaiseError($"{nameof(RotatingLog)} was turned off becouse of some problems");
+                AppHelper.Instance.RaiseError(e);
             }
         }
 

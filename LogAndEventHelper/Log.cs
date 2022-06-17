@@ -13,8 +13,9 @@ namespace Mew {
         public readonly FileInfo Path;
         public int LinesCount { get; private set; }
 
-        public Log(string path, string delimiter = " ", bool append = false, Encoding encoding = null) {
-			this.LinesCount = 0;
+        public Log(string path, bool append = false, string delimiter = " ", Encoding encoding = null) {
+            this.delimiter_ = delimiter;
+            this.LinesCount = 0;
             try {
                 encoding ??= Encoding.Unicode;
                 this.Path = new FileInfo(System.IO.Path.GetFullPath(path));
@@ -25,7 +26,7 @@ namespace Mew {
                 };
             }
             catch (Exception ex) {
-                AppLogAndEventHelper.Instance.RaiseEvent(EventType.Error, ex);
+                AppHelper.Instance.RaiseEvent(EventType.Error, ex);
                 throw;
             }
         }
@@ -44,7 +45,7 @@ namespace Mew {
                 this.SortOutObjectList(list);
             }
             catch (Exception ex) {
-                AppLogAndEventHelper.Instance.RaiseEvent(EventType.Error, ex);
+                AppHelper.Instance.RaiseEvent(EventType.Error, ex);
             }
         }
 
